@@ -1,0 +1,6 @@
+[core]
+    remote = storage
+['remote "storage"']
+    url = s3://gitlab.com/yakovlachin/mlops
+    endpointurl = http://127.0.0.1:9000
+    credentialpath = ../.aws/creds
