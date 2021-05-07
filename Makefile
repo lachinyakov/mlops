@@ -1,11 +1,11 @@
 CWD=/go/src/gitlab.com/yakovlachin/mlops
-IMAGE=gitlab.com/yakovlachin/mlops
+IMAGE=github.com/yakovlachin/mlops
 
 create-network:
 	@-docker network create dev-network
 
 up: create-network
-	@ IMG=$(IMAGE) docker-compose up -d
+	@ IMG=$(IMAGE) docker-compose up -d --build
 
 down:
 	@- IMG=$(IMAGE) docker-compose down --rmi local
