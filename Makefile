@@ -14,7 +14,7 @@ clean:
 	@-docker run --rm -v $(CURDIR):$(CWD) -w $(CWD) golang:1.13.3  sh -c "rm -rf ./tmp/*"
 
 .dvc:
-	bash ./scripts/dvc_init.sh
+	BUCKET=${IMAGE}/data bash ./scripts/dvc_init.sh
 
 data/data.csv:
 	bash ./scripts/lessons_get_test_data.sh

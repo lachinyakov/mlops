@@ -16,14 +16,17 @@ services:
     networks:
       - dev-network
     command: server /data
-  minio_bucket:
+
+# Создание бакета для данных
+  minio_bucket_data:
     image: minio/mc
+    container_name: minio_create_bucket_data
     depends_on:
       - minio
     environment:
       - MINIO_ROOT_USER=root
       - MINIO_ROOT_PASSWORD=password
-      - PROJECT_BUCKET=${IMG}
+      - PROJECT_BUCKET=${IMG}/data
     volumes:
     - ./scripts:/work_dir
     working_dir: /work_dir
@@ -31,9 +34,28 @@ services:
     command:  ./minio_create_bucket.sh
     networks:
       - dev-network
+
+# Создание бакета для моделей
+  minio_bucket_models:
+    image: minio/mc
+    container_name: minio_create_bucket_models
+    depends_on:
+      - minio
+    environment:
+      - MINIO_ROOT_USER=root
+      - MINIO_ROOT_PASSWORD=password
+      - PROJECT_BUCKET=${IMG}/models
+    volumes:
+    - ./scripts:/work_dir
+    working_dir: /work_dir
+    entrypoint: /bin/bash
+    command:  ./minio_create_bucket.sh
+    networks:
+      - dev-network
+
   mlflow_server:
     depends_on:
-      - minio_bucket
+      - minio_bucket_models
       - mysql
     build: build/mlflow-server
     ports:
@@ -42,7 +64,7 @@ services:
       - AWS_ACCESS_KEY_ID=root
       - AWS_SECRET_ACCESS_KEY=password
       - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
-      - MLFLOW_BUCKET=${IMG}
+      - MLFLOW_BUCKET=${IMG}:/models
       - MYSQL_DATABASE=mlflow
       - MYSQL_USER=root
       - MYSQL_PASSWORD=qwerty

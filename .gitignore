@@ -3,3 +3,4 @@ tmp/*
 .idea/
 jupyter/
 *.ipynb
+utils/__pycache__/
